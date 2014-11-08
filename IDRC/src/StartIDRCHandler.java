@@ -1,4 +1,5 @@
 import idrc.Activator;
+import idrc.analysis.IDRCMain;
 import idrc.util.IDRCUtil;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -9,6 +10,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -35,8 +37,17 @@ public class StartIDRCHandler extends AbstractHandler {
 		else{
 			IDRCUtil.print("Currently"+Activator.getProject().toString()+"project is set. Please clear it first");	
 		}
-		IDRCUtil.print(Activator.getProject().toString());
+//		IDRCUtil.print(Activator.getProject().toString());
 		// TODO Auto-generated method stub
+		IDRCMain idrcmain=new IDRCMain();
+		try {
+			idrcmain.getAST();
+		} catch (JavaModelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("error in getting AST");
+		}
+		idrcmain.printAST();
 		return null;
 	}
 	
