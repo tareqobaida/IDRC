@@ -1,10 +1,11 @@
 package idrc.analysis;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import idrc.Activator;
 import idrc.ast.ASTBuilder;
+import idrc.ast.VarDecVisitor;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
@@ -40,6 +41,8 @@ public void getAST() throws JavaModelException{
 public void printAST(){
 	for(Map.Entry<String,CompilationUnit> entry:cunits.entrySet()){
 		CompilationUnit cu=entry.getValue();
+		VarDecVisitor vstr = new VarDecVisitor();
+		cu.accept(vstr);
 		System.out.println("source="+entry.getKey());
 		System.out.println(cu.types().toString());
 	}
