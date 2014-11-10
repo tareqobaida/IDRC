@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import idrc.Activator;
+import idrc.ASTVisitor.ASTNodeAnnotationVisitor;
 import idrc.ast.ASTBuilder;
 
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -16,7 +17,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 public class IDRCMain {
 IJavaProject project;
 IPackageFragment[] packages=null;
-Map <String,CompilationUnit> cunits=new HashMap<String, CompilationUnit>();
+Map <ICompilationUnit,CompilationUnit> cunits=new HashMap<ICompilationUnit, CompilationUnit>();
 public IDRCMain(){
 	this.project=Activator.getProject();
 }
@@ -30,7 +31,7 @@ public void getAST() throws JavaModelException{
 	      if (mypackage.getKind() == IPackageFragmentRoot.K_SOURCE) {
 	        System.out.println("Package " + mypackage.getElementName());
 	        for (ICompilationUnit unit : mypackage.getCompilationUnits()) { //IcompilationUnit is any source file
-	        	cunits.put(unit.getElementName(),ASTBuilder.getASTBuilder().parse(unit)); //store in the map for later use
+	        	cunits.put(unit,ASTBuilder.getASTBuilder().parse(unit)); //store in the map for later use
 	          }
 	      }
 	    }
@@ -38,8 +39,11 @@ public void getAST() throws JavaModelException{
 
 
 public void printAST(){
-	for(Map.Entry<String,CompilationUnit> entry:cunits.entrySet()){
+	for(Map.Entry<ICompilationUnit,CompilationUnit> entry:cunits.entrySet()){
 		CompilationUnit cu=entry.getValue();
+		ICompilationUnit icu=entry.getKey();
+		ASTNodeAnnotationVisitor annvisitor=new ASTNodeAnnotationVisitor(cu, icu);
+		annvisitor.process();
 		System.out.println("source="+entry.getKey());
 		System.out.println(cu.types().toString());
 	}
